@@ -27,11 +27,11 @@ start_link() ->
 %%                  modules => modules()}   % optional
 init([]) ->
     SupFlags = #{strategy => one_for_one,
-                 intensity => 0,
+                 intensity => 1,
                  period => 1},
     ChildSpecs = [#{id => pollution_gen_server,
                   start => {pollution_gen_server, start_link, []},
-                  restart => permanent,
+                  restart => transient,
                   shutdown => 2000,
                   type => worker,
                   modules => [pollution_gen_server]}],

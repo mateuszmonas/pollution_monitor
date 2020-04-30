@@ -10,13 +10,19 @@ start_link() ->
   gen_server:start_link(
     {local,?SERVER},
     ?MODULE,
-    pollution:createMonitor(), []).
+    [], []).
+
+%%start_link(InitialValue) ->
+%%  gen_server:start_link(
+%%    {local,?SERVER},
+%%    ?MODULE,
+%%    InitialValue, []).
 
 init(InitialValue) ->
   io:format("~n=================  Server init  ==================~n~n"),
   {ok, InitialValue}.
 
-stop() -> gen_server:cast(?SERVER, stop).
+stop() -> gen_server:stop(?SERVER).
 crash()  -> gen_server:cast(?SERVER, crash).
 
 safe_update(Module, Fun, Params, Monitor) ->
@@ -60,6 +66,7 @@ handle_call({getDailyAverageDataCount, Identifier}, From, Monitor) ->
 
 handle_cast(stop, Monitor) ->
   {stop, normal, Monitor};
+
 handle_cast(crash, Monitor) -> no:exist(), {noreply, Monitor}.
 
 addStation(Name, Geo) -> gen_server:call(?SERVER, {addStation, Name, Geo}).
@@ -78,6 +85,6 @@ getDailyMean(Date, Type) -> gen_server:call(?SERVER, {getDailyMean, Date, Type})
 
 getDailyAverageDataCount(Identifier) -> gen_server:call(?SERVER, {getDailyAverageDataCount, Identifier}).
 
-terminate(Reason, _) ->
+terminate(Reason, Monitor) ->
   io:format("~n=================  Server terminate  ==================~n~n"),
   Reason.
