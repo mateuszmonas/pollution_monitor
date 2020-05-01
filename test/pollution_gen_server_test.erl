@@ -8,7 +8,7 @@
 
 -ifdef(TEST).
 startServer_test() ->
-  pollution_gen_server:start_link().
+  pollution_gen_server:start_link(pollution:createMonitor()).
 
 addStation_test() ->
   ?assertEqual(ok, pollution_gen_server:addStation("stacja", {1,1})),

@@ -3,7 +3,7 @@
 -define(SERVER, ?MODULE).
 -author("mirek").
 
--export([start_link/0, init/1, handle_call/3, handle_cast/2, terminate/2]).
+-export([start_link/1, init/1, handle_call/3, handle_cast/2, terminate/2]).
 -export([stop/0, addStation/2, addValue/4, removeValue/3, getOneValue/3, getStationMean/2, getHourlyStationMean/3, getDailyMean/2, getDailyAverageDataCount/1, crash/0]).
 
 start_link() ->
@@ -12,11 +12,11 @@ start_link() ->
     ?MODULE,
     [], []).
 
-%%start_link(InitialValue) ->
-%%  gen_server:start_link(
-%%    {local,?SERVER},
-%%    ?MODULE,
-%%    InitialValue, []).
+start_link(InitialValue) ->
+  gen_server:start_link(
+    {local,?SERVER},
+    ?MODULE,
+    InitialValue, []).
 
 init(InitialValue) ->
   io:format("~n=================  Server init  ==================~n~n"),

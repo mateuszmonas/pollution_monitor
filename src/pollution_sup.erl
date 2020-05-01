@@ -25,12 +25,12 @@ start_link() ->
 %%                  shutdown => shutdown(), % optional
 %%                  type => worker(),       % optional
 %%                  modules => modules()}   % optional
-init([]) ->
+init(InitValue) ->
     SupFlags = #{strategy => one_for_one,
                  intensity => 1,
                  period => 1},
     ChildSpecs = [#{id => pollution_gen_server,
-                  start => {pollution_gen_server, start_link, []},
+                  start => {pollution_gen_server, start_link, [InitValue]},
                   restart => transient,
                   shutdown => 2000,
                   type => worker,
