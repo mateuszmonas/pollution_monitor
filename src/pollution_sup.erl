@@ -31,8 +31,8 @@ init(InitValue) ->
                  period => 1},
     ChildSpecs = [#{id => pollution_gen_server,
                   start => {pollution_gen_server, start_link, [InitValue]},
-                  restart => transient,
-                  shutdown => 2000,
+                  restart => permanent,
+                  shutdown => infinity,
                   type => worker,
                   modules => [pollution_gen_server]}],
     {ok, {SupFlags, ChildSpecs}}.
