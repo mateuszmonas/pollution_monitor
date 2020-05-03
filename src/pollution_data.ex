@@ -22,21 +22,29 @@ defmodule PollutionData do
   end
 
   def importLinesFromCSV(path) do
-    path |> File.read! |> String.split("\r\n") |> Enum.map(&parseLine/1)
+    measurements = path |> File.read! |> String.split("\r\n") |> Enum.map(fn e -> Map.put(parseLine(e), :type, 'PM10') end)
+    measurements |> uniqueStations |> Enum.each(&addStation/1)
+    measurements |> Enum.each(&addMeasurement/1)
   end
 
   def uniqueStations(measurements) do
     measurements |>
     Enum.uniq_by(fn %{:location => location} -> location end) |>
-    Enum.map(fn %{:location => location = {lng, lat}} -> {"station_#{lng}_#{lat}", location} end)
+    Enum.map(fn %{:location => location = {lng, lat}} -> {'station_#{lng}_#{lat}', location} end)
   end
 
   def addStation({name, location}) do
-    :pollution_gen_server.addStation(name, location)
+    case :pollution_gen_server.addStation(name, location) do
+      {:error, value} -> IO.puts(value)
+      _ -> IO.puts("stations added")
+    end
   end
 
   def addMeasurement(%{:datetime => datetime, :location => location, :pollutionLevel => value, :type => type}) do
-    :pollution_gen_server.addValue(location, datetime, type, value)
+    case :pollution_gen_server.addValue(location, datetime, type, value) do
+      {:error, value} -> IO.puts(value)
+      _ -> IO.puts("measurement added")
+    end
   end
 
 end
