@@ -64,9 +64,7 @@ handle_call({getDailyAverageDataCount, Identifier}, From, Monitor) ->
   Response = safe_get(pollution, getDailyAverageDataCount, [Identifier, Monitor]),
   {reply, Response, Monitor}.
 
-handle_cast(stop, Monitor) ->
-  {stop, normal, Monitor};
-
+handle_cast(stop, Monitor) -> {stop, normal, Monitor};
 handle_cast(crash, Monitor) -> no:exist(), {noreply, Monitor}.
 
 addStation(Name, Geo) -> gen_server:call(?SERVER, {addStation, Name, Geo}).
@@ -85,6 +83,6 @@ getDailyMean(Date, Type) -> gen_server:call(?SERVER, {getDailyMean, Date, Type})
 
 getDailyAverageDataCount(Identifier) -> gen_server:call(?SERVER, {getDailyAverageDataCount, Identifier}).
 
-terminate(Reason, Monitor) ->
+terminate(Reason, _) ->
   io:format("~n=================  Server terminate  ==================~n~n"),
   Reason.

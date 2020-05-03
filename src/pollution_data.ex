@@ -24,9 +24,17 @@ defmodule PollutionData do
   end
 
   def uniqueStations(measurements) do
-    measurements |> Enum.uniq_by(fn %{:location => location} -> location end) |> Enum.map(fn %{:location => location = {lng, lat}} -> {"station_#{lng}_#{lat}", location} end)
+    measurements |>
+    Enum.uniq_by(fn %{:location => location} -> location end) |>
+    Enum.map(fn %{:location => location = {lng, lat}} -> {"station_#{lng}_#{lat}", location} end)
   end
 
+  def addStation({name, location}) do
 
+  end
+
+  def addMeasurement(%{:identifier => identifier, :datetime => datetime, :location => location, :pollutionLevel => value, :type => type}) do
+
+  end
 
 end
