@@ -6,21 +6,23 @@ defmodule PollutionData do
       {
         date
         |> String.split("-")
+        |> Enum.map(&String.to_integer/1)
         |> Enum.reverse
         |> List.to_tuple,
         time
         |> String.split(":")
-        |> Enum.reverse
+        |> Enum.map(&String.to_integer/1)
+        |> List.insert_at(2, 0)
         |> List.to_tuple
     },
       :location =>
-      {lng |> Float.parse |> elem(0), lat |> Float.parse |> elem(0)},
-      :pollutionLevel => value |> Integer.parse |> elem(0)
+      {lng |> Float.parse |> elem(0), lat |> String.to_float},
+      :pollutionLevel => value |> String.to_integer
     }
   end
 
   def importLinesFromCSV(path) do
-    path |> File.read! |> String.split("\r\n") |> Enum.map(&parseLine/1) |> uniqueStations
+    path |> File.read! |> String.split("\r\n") |> Enum.map(&parseLine/1)
   end
 
   def uniqueStations(measurements) do
@@ -30,11 +32,11 @@ defmodule PollutionData do
   end
 
   def addStation({name, location}) do
-
+    :pollution_gen_server.addStation(name, location)
   end
 
-  def addMeasurement(%{:identifier => identifier, :datetime => datetime, :location => location, :pollutionLevel => value, :type => type}) do
-
+  def addMeasurement(%{:datetime => datetime, :location => location, :pollutionLevel => value, :type => type}) do
+    :pollution_gen_server.addValue(location, datetime, type, value)
   end
 
 end
